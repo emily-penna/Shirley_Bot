@@ -8,7 +8,6 @@ int motorBrakePin = 9;
 int pump1DirectionPin = 13;
 int pump1PwmPin = 11;
 int pump1BrakePin = 8;
-
 //pumps attached to motor driver
 //pump 2 (left side)
 int pump2pin1=2;
@@ -16,9 +15,6 @@ int pump2pin2=3;
 //pump 3 (right side)
 int pump3pin1=4;
 int pump3pin2=5;
-
-//boolean to switch direction
-bool directionState;
 
 void setup() {
   //define pins for motors
@@ -36,9 +32,17 @@ void setup() {
   //pump 3
   pinMode(pump3pin1,OUTPUT);
   pinMode(pump3pin2,OUTPUT);
+
+  Serial.begin(9600);
+
 }
 
 void loop() {
+
+  Serial.println("Press any button to begin!");
+  // while there is no input from the user, do nothing
+  while (Serial.available() == 0){
+  }
 
   //rotate turntable
 
@@ -72,6 +76,12 @@ void loop() {
   digitalWrite(pump3pin2, HIGH);
   delay(1000);
   digitalWrite(pump3pin2, LOW); 
+
+  // Serial.println("Enjoy!~");
+  // Serial.end();
+
+  //clear input
+  Serial.flush();
 
 }
 
