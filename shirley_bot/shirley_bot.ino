@@ -16,6 +16,9 @@ int pump2pin2=3;
 int pump3pin1=4;
 int pump3pin2=5;
 
+bool running = false;
+int time = 2480;
+
 void setup() {
   //define pins for motors
   //motor
@@ -38,50 +41,51 @@ void setup() {
 }
 
 void loop() {
-
-  Serial.println("Press any button to begin!");
+  // Serial.println("Press any button to begin!");
   // while there is no input from the user, do nothing
-  while (Serial.available() == 0){
+  if (Serial.available() == 0 || running){
   }
+  else {
+    running = true;
+    runCycle();
+    running = false;
+    Serial.read();
+  }
+}
 
+void runCycle() {
   //rotate turntable
+  rotateTurntable(time);
 
-  rotateTurntable(1000);
+  delay(2000); //delay to adjust positions if needed
 
-  //activate first pump
-  
+  //activate pumps
+  //pump 1
   digitalWrite(pump1DirectionPin, HIGH);
   digitalWrite(pump1BrakePin, LOW);
   analogWrite(pump1PwmPin, 100);
-  delay(1000); 
+
+  //pump 2
+  digitalWrite(pump2pin1, HIGH);
+
+  //pump 3
+  // digitalWrite(pump3pin2, HIGH);
+
+  delay(10000);
+
+
+  //stop pumps
+  //pump 1
   digitalWrite(pump1BrakePin, HIGH);
   analogWrite(pump1PwmPin, 0);
 
-  //rotate to next pump 
-
-  rotateTurntable(1000);
-  
-  //activate second pump
-
-  digitalWrite(pump2pin1, HIGH);
-  delay(1000);
+  //pump 2
   digitalWrite(pump2pin1, LOW); 
 
-  //rotate to final pump
+  //pump 3
+  // digitalWrite(pump3pin2, LOW); 
 
-  rotateTurntable(1000);
 
-  //activate third pump
-
-  digitalWrite(pump3pin2, HIGH);
-  delay(1000);
-  digitalWrite(pump3pin2, LOW); 
-
-  // Serial.println("Enjoy!~");
-  // Serial.end();
-
-  //clear input
-  Serial.flush();
 
 }
 
@@ -92,15 +96,24 @@ void rotateTurntable(int ms) {
   //release breaks
   digitalWrite(motorBrakePin, LOW);
   //set work duty for the pump1
-  analogWrite(motorPwmPin, 60);
+  //run at full speed
+  analogWrite(motorPwmPin, 55);
+  delay(ms/2); 
 
-  delay(ms);  //rotate for this many ms
+  //slow down
+  analogWrite(motorPwmPin, 45);
+  delay(ms/2);
+
+  // digitalWrite(motorDirectionPin, LOW);
+  // analogWrite(motorPwmPin, 45); 
+  // delay(100);
 
   //activate breaks
   digitalWrite(motorBrakePin, HIGH);
   //set work duty for the pump1 to 0 (off)
   analogWrite(motorPwmPin, 0);
 }
+
 
 
 
